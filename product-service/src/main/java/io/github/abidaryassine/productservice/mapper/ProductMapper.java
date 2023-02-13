@@ -18,7 +18,7 @@ public final class ProductMapper {
 
 
     public static ProductDto toDto(final ProductEntity productEntity) {
-        return new ProductDto(productEntity.getId(), productEntity.getLibelle(),
+        return new ProductDto(productEntity.getId(),productEntity.getLibelle(),
                 productEntity.getDescription(), productEntity.getQuantite(), productEntity.getPrice());
     }
 

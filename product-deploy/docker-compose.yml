@@ -9,19 +9,6 @@ services:
       - "27017:27017"
     networks:
       - net
-  app:
-    build:
-      context: ../product-service
-      dockerfile: Dockerfile
-    container_name: product-service
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/productDb
-    depends_on:
-      - mongodb
-    networks:
-      - net
 volumes:
   mongodb-data:
 networks:

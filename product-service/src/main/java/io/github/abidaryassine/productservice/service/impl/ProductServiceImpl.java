@@ -12,10 +12,13 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.abidaryassine.productservice.mapper.ProductMapper.*;
+import static io.github.abidaryassine.productservice.validator.ProductValidator.validateProduct;
 
 /**
  * @author yassineabidar on 31/1/2023
@@ -31,8 +34,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto save(final ProductDto productDto) {
-        // TODO validate dto
         log.info("Start validating productDto {}", productDto);
+        validateProduct(productDto);
         final var productEntity = toEntity(productDto);
         final var savedProduct = productRepository.save(productEntity);
         log.info("Product saved with id {}", savedProduct.getId());
@@ -40,16 +43,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> search(final ProductSearchDto productSearchDto) {
+    public List<ProductDto> search(final String keyword) {
         Query query = new Query();
         List<Criteria> criteria = new ArrayList<>();
+        criteria.add(Criteria.where("libelle").is(keyword));
+        criteria.add(Criteria.where("description").is(keyword));
 
-        criteria.add(Criteria.where("price").is(productSearchDto.price()));
-        criteria.add(Criteria.where("libelle").is(productSearchDto.libelle()));
-        criteria.add(Criteria.where("description").is(productSearchDto.description()));
-
-        query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[0])));
+        query.addCriteria(new Criteria().orOperator(criteria.toArray(new Criteria[0])));
         List<ProductEntity> result = mongoTemplate.find(query, ProductEntity.class);
         return toDtos(result);
+    }
+
+    @Override
+    public List<ProductDto> all() {
+        final var all = productRepository.findAll();
+        return toDtos(all);
     }
 }
