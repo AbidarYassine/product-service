@@ -42,8 +42,6 @@ public class ProductController {
     @ResponseStatus(value = OK)
     public List<ProductDto> search(@Param(value = "keyword") String keyword) {
         log.info("Searching products criteria {}", keyword);
-        final var search = productService.search(keyword);
-        log.info("result size {}",search.size());
-        return search;
+        return productService.search(keyword);
     }
 }
