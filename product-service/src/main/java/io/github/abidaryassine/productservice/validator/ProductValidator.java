@@ -2,6 +2,7 @@ package io.github.abidaryassine.productservice.validator;
 
 import io.github.abidaryassine.productservice.dto.ProductDto;
 import io.github.abidaryassine.productservice.dto.Result;
+import io.github.abidaryassine.productservice.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -14,7 +15,6 @@ import java.math.BigDecimal;
 @Slf4j
 public final class ProductValidator {
 
-    // TODO Internalisation
 
     private ProductValidator() {
         throw new IllegalArgumentException("Private constructor ProductValidator");
@@ -26,7 +26,7 @@ public final class ProductValidator {
         validateDescription(productDto.description(), errors);
         validatePrice(productDto.price(), errors);
         log.info("ERROR length {}", errors.getErrors().size());
-        if (!errors.hasError()) throw new RuntimeException("errors");
+        if (!errors.hasError()) throw new BusinessException(errors.getErrors().toString());
     }
 
 
